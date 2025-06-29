@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: movie-recommender
+    env: python
+    buildCommand: pip install -r ../requirements.txt
+    startCommand: gunicorn app:app
+    plan: free
+    rootDir: Movie_Recommender
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.4
