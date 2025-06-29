@@ -1,31 +1,6 @@
-# requirements.txt for Python 3.12.4
-
-# Core Web App Dependencies
-flask==3.1.1
-gunicorn==23.0.0
-
-# Data Processing
-pandas==2.3.0
-numpy==1.26.4
-scikit-learn==1.4.0
-tqdm==4.66.2
-
-# Transformers and Embeddings
-sentence-transformers==2.7.0
-transformers==4.39.3
-tokenizers==0.15.1
-
-# Torch and Torchvision (Stable, CPU-only for Python 3.12)
-# Use the stable release for Python 3.12, no need for nightly here
-# torch==2.3.1+cpu  # Specify CPU build explicitly for better compatibility
-# torchvision==0.18.1+cpu # Corresponds to torch 2.3.1
-
-# Utility Libraries
-regex==2024.5.15
-requests==2.32.3
-
-# Flask Internals (Versions align with Flask 3.1.1)
-jinja2==3.1.3
-itsdangerous==2.2.0
-werkzeug==3.1.3
-click==8.1.7
+Flask
+gunicorn
+pandas
+numpy
+scikit-learn
+sentence-transformers
