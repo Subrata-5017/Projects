@@ -119,8 +119,16 @@ def load_and_clean_data():
     # This can help remove exact duplicate entries that might have slipped through
     df.drop_duplicates(subset=['title', 'release_year', 'content_type'], inplace=True)
 
-
+    df['content_type'] = df['content_type'].str.strip().str.lower().replace({
+    'web series': 'webseries',
+    'web_series': 'webseries',
+    'tv show': 'webseries',
+    'series': 'webseries',
+    'film': 'movie',
+    'tv': 'webseries'
+    })
     print("✅ Data loading and cleaning complete.")
+    
     return df
 
 def normalize_ratings(df):

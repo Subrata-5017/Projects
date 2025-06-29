@@ -1,5 +1,4 @@
-Flask
-gunicorn
+gradio
 pandas
 numpy
 scikit-learn

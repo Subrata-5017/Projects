@@ -125,7 +125,11 @@ def recommend(query_title, df, embeddings, num_results=10, content_type=None):
     # print(f"DEBUG(recommender): Candidates BEFORE type filter: {len(df_recs)}")
     # print(f"DEBUG(recommender): Content types in candidates before filter: {df_recs['content_type'].unique().tolist()}")
 
-    if content_type and content_type in ['movie', 'web_series']:
+    # Normalize the content_type value before filtering
+    if content_type:
+        content_type = content_type.replace(" ", "").lower()  # e.g., 'web series' → 'webseries'
+
+    if content_type in ['movie', 'webseries']:  # Match what your dataset actually contains
         initial_count = len(df_recs)
         df_recs = df_recs[df_recs['content_type'] == content_type]
         print(f"DEBUG(recommender): Type filter '{content_type}' applied. Candidates remaining: {len(df_recs)} (from {initial_count})")
