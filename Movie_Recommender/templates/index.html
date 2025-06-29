@@ -1,0 +1,445 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie & Series Recommender</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+            }       
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #ff7e5f, #feb47b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a0a0c0;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+        
+        .search-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px auto 40px;
+            max-width: 800px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .input-group {
+            display: flex;
+            margin-bottom: 20px;
+            gap: 15px;
+        }
+        
+        input, select {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus, select:focus {
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 0 2px #ff7e5f;
+        }
+        
+        input::placeholder {
+            color: #a0a0c0;
+        }
+        
+        button {
+            background: linear-gradient(90deg, #ff7e5f, #feb47b);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 126, 95, 0.4);
+        }
+        
+        .results-container {
+            display: none;
+            margin-top: 30px;
+        }
+        
+        .selected-movie {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+        }
+        
+        .selected-movie h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .type-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-top: 5px;
+        }
+        
+        .movie-type {
+            background: linear-gradient(90deg, #4e54c8, #8f94fb);
+        }
+        
+        .series-type {
+            background: linear-gradient(90deg, #11998e, #38ef7d);
+        }
+        
+        .recommendations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card-header {
+            height: 200px;
+            background: linear-gradient(45deg, #2c3e50, #4a6491);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .card-header i {
+            font-size: 4rem;
+            opacity: 0.2;
+        }
+        
+        .card-type {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        .card-title {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .card-genres {
+            color: #a0a0c0;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            min-height: 40px;
+        }
+        
+        .card-details {
+            display: flex;
+            flex-direction: column; /* 👈 NEW */
+            gap: 8px; /* 👈 Optional: adds spacing between lines */
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }       
+        
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #feb47b;
+        }
+        
+        .popularity {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #4e54c8;
+        }
+        
+        .seasons {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #38ef7d;
+        }
+        
+        .platform {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #ff7e5f;
+        }
+        
+        .loader {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .loader-spinner {
+            border: 5px solid rgba(255, 255, 255, 0.1);
+            border-top: 5px solid #ff7e5f;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .search-results {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            margin-top: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        .search-result-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .search-result-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .result-type {
+            font-size: 0.8rem;
+            padding: 3px 10px;
+            border-radius: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .input-group {
+                flex-direction: column;
+            }
+            
+            .recommendations-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Movie & Series Recommender</h1>
+      <p class="subtitle">Discover your next favorite movie or TV show based on genre, ratings, and popularity</p>
+    </header>
+
+    <div class="search-container">
+      <div class="input-group">
+        <div style="flex: 1; position: relative;">
+          <input type="text" id="movie-input" placeholder="Enter a movie or series you like..." />
+          <div class="search-results" id="search-results"></div>
+        </div>
+        <select id="content-type">
+          <option value="both">All Content</option>
+          <option value="movie">Movies Only</option>
+          <option value="web_series">Series Only</option>
+        </select>
+        <select id="num-results">
+          <option value="5">5 Results</option>
+          <option value="10" selected>10 Results</option>
+          <option value="15">15 Results</option>
+        </select>
+      </div>
+
+      <button id="recommend-btn">
+        <i class="fas fa-search"></i> Get Recommendations
+      </button>
+
+      <div class="loader" id="loader">
+        <div class="loader-spinner"></div>
+        <p>Finding your perfect recommendations...</p>
+      </div>
+
+      <div class="results-container" id="results-container">
+        <div class="selected-movie">
+          <h2 id="selected-title">Movie Title</h2>
+          <div id="selected-type" class="type-badge movie-type">Type</div>
+        </div>
+
+        <h3>Recommended for You:</h3>
+        <div class="recommendations-grid" id="recommendations-grid">
+          <!-- Cards will be appended here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const movieInput = document.getElementById('movie-input');
+      const recommendBtn = document.getElementById('recommend-btn');
+      const resultsContainer = document.getElementById('results-container');
+      const loader = document.getElementById('loader');
+      const recommendationsGrid = document.getElementById('recommendations-grid');
+      const selectedTitle = document.getElementById('selected-title');
+      const selectedType = document.getElementById('selected-type');
+
+      recommendBtn.addEventListener('click', function () {
+        const movieTitle = movieInput.value.trim();
+        if (!movieTitle) return;
+
+        const contentType = document.getElementById('content-type').value;
+        const numResults = document.getElementById('num-results').value;
+
+        loader.style.display = 'block'; // ✅ fixed typo here
+        resultsContainer.style.display = 'none';
+
+        fetch('/recommend', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            title: movieTitle,
+            num: numResults,
+            content_type: contentType
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          loader.style.display = 'none';
+
+          if (data.status === 'error') {
+            alert(data.message);
+            return;
+          }
+
+          console.log("🎬 Recommendations received:", data.recommendations);
+
+          selectedTitle.textContent = data.selected_title;
+          selectedType.textContent = data.content_type === 'movie' ? 'Movie' : 'Web Series';
+          selectedType.className = `type-badge ${data.content_type === 'movie' ? 'movie-type' : 'series-type'}`;
+
+          recommendationsGrid.innerHTML = '';
+
+          data.recommendations.forEach(rec => {
+            const card = document.createElement('div');
+            card.className = 'card';
+
+            const icon = rec.content_type === 'movie' ? 'fas fa-film' : 'fas fa-tv';
+            const typeBadge = rec.content_type === 'movie'
+              ? '<div class="card-type movie-type">Movie</div>'
+              : '<div class="card-type series-type">Series</div>';
+
+            let detailsHTML = '';
+            if (rec.seasons) {
+              detailsHTML += `<div class="seasons"><i class="fas fa-list-ol"></i> ${rec.seasons} Seasons</div>`;
+            }
+            if (rec.platform) {
+              detailsHTML += `<div class="platform"><i class="fas fa-play-circle"></i> ${rec.platform}</div>`;
+            }
+            detailsHTML += `
+              <div class="rating"><i class="fas fa-star"></i> ${rec.rating}</div>
+              <div class="popularity"><i class="fas fa-fire"></i> ${rec.popularity}</div>
+            `;
+
+            card.innerHTML = `
+              <div class="card-header">
+                <i class="${icon}"></i>
+                ${typeBadge}
+              </div>
+              <div class="card-body">
+                <h3 class="card-title">${rec.title}</h3>
+                <p class="card-genres">${rec.genres}</p>
+                <div class="card-details">${detailsHTML}</div>
+              </div>
+            `;
+
+            recommendationsGrid.appendChild(card);
+          });
+
+          resultsContainer.style.display = 'block';
+          resultsContainer.scrollIntoView({ behavior: 'smooth' });
+        })
+        .catch(error => {
+          loader.style.display = 'none';
+          console.error('Error:', error);
+          alert('An error occurred. Please try again.');
+        });
+      });
+    });
+  </script>
+</body>
+</html>
