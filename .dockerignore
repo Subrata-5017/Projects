@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+*.ipynb
+*.pkl
+*.zip
+*.tar
+*.gz
+*.log
+venv/
+.env
+.git/
+notebooks/
+*.svg
