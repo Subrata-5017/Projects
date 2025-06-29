@@ -10,33 +10,15 @@ app = Flask(__name__)
 app.config["JSONIFY_PRETTYPRINT_REGULAR"] = False
 
 def load_everything():
-    """Loads and returns cleaned DataFrame and embeddings safely."""
-    print("🚀 Loading data and embeddings...")
-    
-    # Load and preprocess data
-    df = load_and_clean_data()
-    df['combined_features'] = combine_features(df)
+    print("🚀 Testing minimal load: just DataFrame, no embeddings")
 
-    # Load or generate embeddings
-    embedding_path = "embeddings.npy"  # Path relative to Movie_Recommender/
-    if os.path.exists(embedding_path):
-        try:
-            emb = np.load(embedding_path)
-            if emb.shape[0] != len(df):
-                print("⚠️ Embedding mismatch — regenerating...")
-                emb = generate_embeddings(df["combined_features"])
-                np.save(embedding_path, emb)
-        except Exception as e:
-            print(f"❌ Error loading embeddings: {e} — regenerating...")
-            emb = generate_embeddings(df["combined_features"])
-            np.save(embedding_path, emb)
-    else:
-        print("🔧 No embeddings found — generating...")
-        emb = generate_embeddings(df["combined_features"])
-        np.save(embedding_path, emb)
+    df = pd.read_csv("data/movies_metadata.csv")
+    df = df.head(50)  # ✅ Only load 50 rows temporarily
 
-    print(f"✅ Embeddings ready: shape = {emb.shape}")
-    return df, emb
+    df["combined_features"] = df["title"].fillna("")  # Dummy placeholder
+    embeddings = np.random.rand(50, 384).astype(np.float32)  # Dummy embeddings
+
+    return df, embeddings
 
 # --- ROUTES ---
 

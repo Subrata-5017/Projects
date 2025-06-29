@@ -6,8 +6,9 @@ __pycache__/
 *.tar
 *.gz
 *.log
+*.svg
+*.md
 venv/
 .env
 .git/
-notebooks/
-*.svg
+Movie_Recommender/notebooks/
